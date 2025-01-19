@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка звуков в бота</title>
+</head>
+<body>
+    <form id="sound_upload_form">
+        <input type="file" id="sound_choose_button" accept=".png">
+        <button id="confirm_button">Добавить звук</button>
+    </form>
+    
+    <script>
+        const ADDRESS = "127.0.0.1";
+
+        async function sendSound()
+        {
+            var sound_choose_button = document.getElementById("sound_choose_button");
+            // alert(sound_choose_button.files[0].value);
+            var response = await fetch("/upload_sound", {
+                    method: "post",
+                    body: new FormData(sound_upload_form)
+            });
+            
+            var result = await response.json();
+            alert(result.message);
+        }
+
+        /*
+        function sendMessage() {
+            var message_text = document.getElementById("message-input").value;
+            if (message_text.length > 0) {
+                fetch("http://" + ADRESS + ":3000/chat", {
+                    method: "post",
+                    body: JSON.stringify({
+                        "Text": message_text
+                    })
+                });
+            }
+            document.getElementById("message-input").value = "";
+        }
+        */
+    
+        var confirm_button = document.getElementById("confirm_button");
+        confirm_button.onclick = sendSound;
+        
+    </script>
+</body>
+</html>
