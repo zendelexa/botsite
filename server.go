@@ -1,17 +1,17 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
-	"mime"
-	"mime/multipart"
 	"net/http"
 	"os"
 )
 
-// type Message struct {
-// 	Text string
-// }
+type Message struct {
+	Text string
+}
 
 // const MXM_CHAT_SIZE int = 20000
 
@@ -51,6 +51,7 @@ func logErr(err error) {
 // }
 
 func handleFuncHome(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("home")
 	switch r.Method {
 	case http.MethodGet:
 		dat, err := os.ReadFile("site.html")
@@ -61,10 +62,24 @@ func handleFuncHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleFuncUploadSound(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Received")
 	switch r.Method {
 	case http.MethodPost:
-		mediaType, params, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-		reader := multipart.NewReader(r.Body, params["boundary"])
+		var msg Message
+		json.NewDecoder(r.Body).Decode(&msg)
+		fmt.Print(len(msg.Text))
+		fmt.Print(msg.Text)
+		fmt.Println("a")
+		data, err := base64.StdEncoding.DecodeString(msg.Text)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = os.WriteFile("img.png", data, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// mediaType, params, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+		// reader := multipart.NewReader(r.Body, params["boundary"])
 	}
 }
 

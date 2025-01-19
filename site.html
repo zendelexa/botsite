@@ -6,9 +6,9 @@
     <title>Загрузка звуков в бота</title>
 </head>
 <body>
-    <form id="sound_upload_form">
+    <form id="sound_upload_form" onsubmit="sendSound(); return false;" encType="multipart/form-data">
         <input type="file" id="sound_choose_button" accept=".png">
-        <button id="confirm_button">Добавить звук</button>
+        <input type="submit" id="confirm_button" value="Добавить звук">
     </form>
     
     <script>
@@ -16,15 +16,29 @@
 
         async function sendSound()
         {
-            var sound_choose_button = document.getElementById("sound_choose_button");
-            // alert(sound_choose_button.files[0].value);
-            var response = await fetch("/upload_sound", {
+            // var sound_choose_button = document.getElementById("sound_choose_button");
+
+            let reader = new FileReader();
+            reader.readAsDataURL(sound_choose_button.files[0]);
+
+            reader.onload = function() {
+                console.log(reader.result);
+                fetch("/upload_sound", {
                     method: "post",
-                    body: new FormData(sound_upload_form)
-            });
+                    // body: form_data
+                    body: JSON.stringify({
+                    "Text": reader.result.split(',')[1]
+                    })
+                });
+            };
+
+            reader.onerror = function() {
+                console.log(reader.error);
+            };
+
+            var form_data = new FormData();
+            form_data.append("File", sound_choose_button.files[0]);
             
-            var result = await response.json();
-            alert(result.message);
         }
 
         /*
@@ -43,7 +57,7 @@
         */
     
         var confirm_button = document.getElementById("confirm_button");
-        confirm_button.onclick = sendSound;
+        // confirm_button.onclick = sendSound;
         
     </script>
 </body>
