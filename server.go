@@ -10,6 +10,7 @@ import (
 )
 
 type Message struct {
+	Name string
 	Text string
 }
 
@@ -36,7 +37,7 @@ func handleFuncUploadSound(w http.ResponseWriter, r *http.Request) {
 		json.NewDecoder(r.Body).Decode(&msg)
 		data, err := base64.StdEncoding.DecodeString(msg.Text)
 		logPotentialErr(err)
-		err = os.WriteFile("img.png", data, 0644)
+		err = os.WriteFile(msg.Name, data, 0644)
 		logPotentialErr(err)
 	}
 }

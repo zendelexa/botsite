@@ -7,29 +7,46 @@
 </head>
 <body>
     <form id="sound_upload_form" onsubmit="sendSound(); return false;" encType="multipart/form-data">
-        <input type="file" id="sound_choose_button" accept=".png">
+        <input type="file" id="sound_choose_button" accept=".mp4, .mp3">
         <input type="submit" id="confirm_button" value="Добавить звук">
     </form>
     
     <script>
+        function isValidFileExtension(filename, valid_extensions)
+        {
+            for (const valid_extension of valid_extensions)
+                if (filename.endsWith(valid_extension)) 
+                    return true;
+            return false;
+        }
+
+        const VALID_EXTENSIONS = [".mp4", ".mp3"];
         async function sendSound()
         {
-            let reader = new FileReader();
-            reader.readAsDataURL(sound_choose_button.files[0]);
+            for (const file of sound_choose_button.files) {
+                let name = sound_choose_button.files[0].name;
 
-            reader.onload = function() {
-                console.log(reader.result);
-                fetch("/upload_sound", {
-                    method: "post",
-                    body: JSON.stringify({
-                    "Text": reader.result.split(',')[1]
-                    })
-                });
-            };
+                if (!isValidFileExtension(name, VALID_EXTENSIONS))
+                    return;
 
-            reader.onerror = function() {
-                console.log(reader.error);
-            };
+                let reader = new FileReader();
+                reader.readAsDataURL(sound_choose_button.files[0]);
+
+                reader.onload = function() {
+                    console.log(reader.result);
+                    fetch("/upload_sound", {
+                        method: "post",
+                        body: JSON.stringify({
+                            "name": name,
+                            "text": reader.result.split(',')[1]
+                        })
+                    });
+                };
+
+                reader.onerror = function() {
+                    console.log(reader.error);
+                };
+            }
         }        
     </script>
 </body>
