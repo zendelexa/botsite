@@ -31,7 +31,7 @@ func handleFuncHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const SOUNDS_PATH_PREFIX = ""
+const SOUNDS_DIR_PATH = "."
 const SOUNDS_NAMES_PATH = "sounds.txt"
 
 func handleFuncUploadSound(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func handleFuncUploadSound(w http.ResponseWriter, r *http.Request) {
 		json.NewDecoder(r.Body).Decode(&msg)
 		data, err := base64.StdEncoding.DecodeString(msg.Text)
 		logPotentialErr(err)
-		err = os.WriteFile(SOUNDS_PATH_PREFIX+msg.Name, data, 0644)
+		err = os.WriteFile(SOUNDS_DIR_PATH+"/"+msg.Name, data, 0644)
 		logPotentialErr(err)
 
 		f, err := os.OpenFile(SOUNDS_NAMES_PATH, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
