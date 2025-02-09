@@ -24,15 +24,15 @@ func logPotentialErr(err error) {
 func handleFuncHome(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		dat, err := os.ReadFile("site.html")
+		dat, err := os.ReadFile("botsite/site.html")
 		logPotentialErr(err)
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, string(dat))
 	}
 }
 
-const SOUNDS_DIR_PATH = "."
-const SOUNDS_NAMES_PATH = "sounds.txt"
+const SOUNDS_DIR_PATH = "sounds"
+const SOUNDS_NAMES_PATH = "sounds/sounds.txt"
 
 func handleFuncUploadSound(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
